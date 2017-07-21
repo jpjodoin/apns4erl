@@ -206,7 +206,7 @@ default_headers([Key | Keys], Headers) ->
     {ok, undefined} ->
       default_headers(Keys, Headers);
     {ok, Value} ->
-      NewHeaders = Headers#{Key => to_binary(Value)},
+      NewHeaders = maps:update(Key,to_binary(Value), Headers),
       default_headers(Keys, NewHeaders)
   end.
 
