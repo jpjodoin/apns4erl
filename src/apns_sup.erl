@@ -57,17 +57,20 @@ create_connection(Connection) ->
 -spec init(any()) ->
   {ok, {supervisor:sup_flags(), [supervisor:child_spec()]}}.
 init([]) ->
-  SupFlags = #{ strategy  => simple_one_for_one
-              , intensity => 1000
-              , period    => 3600
-              },
+SupFlags = {simple_one_for_one, 1000, 3600},
+  % SupFlags = #{ strategy  => simple_one_for_one
+  %             , intensity => 1000
+  %             , period    => 3600
+  %             },
+Children = {apns_connection, {apns_connection, start_link, []}, temporary, 5000, worker, [apns_connection]},
 
-  Children = [#{ id       => apns_connection
-               , start    => {apns_connection, start_link, []}
-               , restart  => temporary
-               , shutdown => 5000
-               , type     => worker
-               , modules  => [apns_connection]
-               }],
 
-  {ok, {SupFlags, Children}}.
+  % Children = [#{ id       => apns_connection
+  %              , start    => {apns_connection, start_link, []}
+  %              , restart  => temporary
+  %              , shutdown => 5000
+  %              , type     => worker
+  %              , modules  => [apns_connection]
+  %              }],
+
+  {ok, {SupFlags, [Children]}}.
